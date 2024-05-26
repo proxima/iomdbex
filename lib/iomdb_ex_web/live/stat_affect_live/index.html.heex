@@ -1,0 +1,46 @@
+<.header>
+  Listing Stat affects
+  <:actions>
+    <.link patch={~p"/stat_affects/new"}>
+      <.button>New Stat affect</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="stat_affects"
+  rows={@streams.stat_affects}
+  row_click={fn {_id, stat_affect} -> JS.navigate(~p"/stat_affects/#{stat_affect}") end}
+>
+  <:col :let={{_id, stat_affect}} label="Value"><%= stat_affect.value %></:col>
+  <:action :let={{_id, stat_affect}}>
+    <div class="sr-only">
+      <.link navigate={~p"/stat_affects/#{stat_affect}"}>Show</.link>
+    </div>
+    <.link patch={~p"/stat_affects/#{stat_affect}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, stat_affect}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: stat_affect.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="stat_affect-modal"
+  show
+  on_cancel={JS.patch(~p"/stat_affects")}
+>
+  <.live_component
+    module={IomdbExWeb.StatAffectLive.FormComponent}
+    id={@stat_affect.id || :new}
+    title={@page_title}
+    action={@live_action}
+    stat_affect={@stat_affect}
+    patch={~p"/stat_affects"}
+  />
+</.modal>

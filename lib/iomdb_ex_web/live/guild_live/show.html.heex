@@ -1,0 +1,33 @@
+<.header>
+  Guild <%= @guild.id %>
+  <:subtitle>This is a guild record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/guilds/#{@guild}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit guild</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @guild.name %></:item>
+  <:item title="Location"><%= @guild.location %></:item>
+  <:item title="Levels"><%= @guild.levels %></:item>
+</.list>
+
+<.back navigate={~p"/guilds"}>Back to guilds</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="guild-modal"
+  show
+  on_cancel={JS.patch(~p"/guilds/#{@guild}")}
+>
+  <.live_component
+    module={IomdbExWeb.GuildLive.FormComponent}
+    id={@guild.id}
+    title={@page_title}
+    action={@live_action}
+    guild={@guild}
+    patch={~p"/guilds/#{@guild}"}
+  />
+</.modal>

@@ -1,0 +1,47 @@
+<.header>
+  Race <%= @race.id %>
+  <:subtitle>This is a race record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/races/#{@race}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit race</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @race.name %></:item>
+  <:item title="Strength"><%= @race.strength %></:item>
+  <:item title="Dexterity"><%= @race.dexterity %></:item>
+  <:item title="Constitution"><%= @race.constitution %></:item>
+  <:item title="Intelligence"><%= @race.intelligence %></:item>
+  <:item title="Wisdom"><%= @race.wisdom %></:item>
+  <:item title="Stamina"><%= @race.stamina %></:item>
+  <:item title="Charisma"><%= @race.charisma %></:item>
+  <:item title="Hpregen"><%= @race.hpregen %></:item>
+  <:item title="Spregen"><%= @race.spregen %></:item>
+  <:item title="Epregen"><%= @race.epregen %></:item>
+  <:item title="Skill max"><%= @race.skill_max %></:item>
+  <:item title="Spell max"><%= @race.spell_max %></:item>
+  <:item title="Skill rate"><%= @race.skill_rate %></:item>
+  <:item title="Spell rate"><%= @race.spell_rate %></:item>
+  <:item title="Experience rate"><%= @race.experience_rate %></:item>
+  <:item title="Need dark to regen"><%= @race.need_dark_to_regen %></:item>
+  <:item title="Need light to regen"><%= @race.need_light_to_regen %></:item>
+  <:item title="Corpse eating"><%= @race.corpse_eating %></:item>
+  <:item title="Average height"><%= @race.average_height %></:item>
+  <:item title="Average weight"><%= @race.average_weight %></:item>
+  <:item title="Description"><%= @race.description %></:item>
+</.list>
+
+<.back navigate={~p"/races"}>Back to races</.back>
+
+<.modal :if={@live_action == :edit} id="race-modal" show on_cancel={JS.patch(~p"/races/#{@race}")}>
+  <.live_component
+    module={IomdbExWeb.RaceLive.FormComponent}
+    id={@race.id}
+    title={@page_title}
+    action={@live_action}
+    race={@race}
+    patch={~p"/races/#{@race}"}
+  />
+</.modal>

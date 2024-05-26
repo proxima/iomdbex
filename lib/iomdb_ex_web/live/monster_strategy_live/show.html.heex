@@ -1,0 +1,37 @@
+<.header>
+  Monster strategy <%= @monster_strategy.id %>
+  <:subtitle>This is a monster_strategy record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/equipment_mob_strategies/#{@monster_strategy}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit monster_strategy</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Additional prot info"><%= @monster_strategy.additional_prot_info %></:item>
+  <:item title="Walkthrough"><%= @monster_strategy.walkthrough %></:item>
+  <:item title="Quest mob"><%= @monster_strategy.quest_mob %></:item>
+  <:item title="Fight notes"><%= @monster_strategy.fight_notes %></:item>
+</.list>
+
+<.back navigate={~p"/equipment_mob_strategies"}>Back to equipment_mob_strategies</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="monster_strategy-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_mob_strategies/#{@monster_strategy}")}
+>
+  <.live_component
+    module={IomdbExWeb.MonsterStrategyLive.FormComponent}
+    id={@monster_strategy.id}
+    title={@page_title}
+    action={@live_action}
+    monster_strategy={@monster_strategy}
+    patch={~p"/equipment_mob_strategies/#{@monster_strategy}"}
+  />
+</.modal>

@@ -1,0 +1,35 @@
+<.header>
+  Spell train spec <%= @spell_train_spec.id %>
+  <:subtitle>This is a spell_train_spec record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/spell_train_specs/#{@spell_train_spec}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit spell_train_spec</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Level"><%= @spell_train_spec.level %></:item>
+  <:item title="Max"><%= @spell_train_spec.max %></:item>
+</.list>
+
+<.back navigate={~p"/spell_train_specs"}>Back to spell_train_specs</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="spell_train_spec-modal"
+  show
+  on_cancel={JS.patch(~p"/spell_train_specs/#{@spell_train_spec}")}
+>
+  <.live_component
+    module={IomdbExWeb.SpellTrainSpecLive.FormComponent}
+    id={@spell_train_spec.id}
+    title={@page_title}
+    action={@live_action}
+    spell_train_spec={@spell_train_spec}
+    patch={~p"/spell_train_specs/#{@spell_train_spec}"}
+  />
+</.modal>

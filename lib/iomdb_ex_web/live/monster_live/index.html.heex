@@ -1,0 +1,46 @@
+<.header>
+  Listing Equipment monsters
+  <:actions>
+    <.link patch={~p"/equipment_monsters/new"}>
+      <.button>New Monster</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="equipment_monsters"
+  rows={@streams.equipment_monsters}
+  row_click={fn {_id, monster} -> JS.navigate(~p"/equipment_monsters/#{monster}") end}
+>
+  <:col :let={{_id, monster}} label="Name"><%= monster.name %></:col>
+  <:action :let={{_id, monster}}>
+    <div class="sr-only">
+      <.link navigate={~p"/equipment_monsters/#{monster}"}>Show</.link>
+    </div>
+    <.link patch={~p"/equipment_monsters/#{monster}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, monster}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: monster.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="monster-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_monsters")}
+>
+  <.live_component
+    module={IomdbExWeb.MonsterLive.FormComponent}
+    id={@monster.id || :new}
+    title={@page_title}
+    action={@live_action}
+    monster={@monster}
+    patch={~p"/equipment_monsters"}
+  />
+</.modal>

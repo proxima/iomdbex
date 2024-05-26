@@ -1,0 +1,62 @@
+<.header>
+  Listing Races
+  <:actions>
+    <.link patch={~p"/races/new"}>
+      <.button>New Race</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="races"
+  rows={@streams.races}
+  row_click={fn {_id, race} -> JS.navigate(~p"/races/#{race}") end}
+>
+  <:col :let={{_id, race}} label="Name"><%= race.name %></:col>
+  <:col :let={{_id, race}} label="Strength"><%= race.strength %></:col>
+  <:col :let={{_id, race}} label="Dexterity"><%= race.dexterity %></:col>
+  <:col :let={{_id, race}} label="Constitution"><%= race.constitution %></:col>
+  <:col :let={{_id, race}} label="Intelligence"><%= race.intelligence %></:col>
+  <:col :let={{_id, race}} label="Wisdom"><%= race.wisdom %></:col>
+  <:col :let={{_id, race}} label="Stamina"><%= race.stamina %></:col>
+  <:col :let={{_id, race}} label="Charisma"><%= race.charisma %></:col>
+  <:col :let={{_id, race}} label="Hpregen"><%= race.hpregen %></:col>
+  <:col :let={{_id, race}} label="Spregen"><%= race.spregen %></:col>
+  <:col :let={{_id, race}} label="Epregen"><%= race.epregen %></:col>
+  <:col :let={{_id, race}} label="Skill max"><%= race.skill_max %></:col>
+  <:col :let={{_id, race}} label="Spell max"><%= race.spell_max %></:col>
+  <:col :let={{_id, race}} label="Skill rate"><%= race.skill_rate %></:col>
+  <:col :let={{_id, race}} label="Spell rate"><%= race.spell_rate %></:col>
+  <:col :let={{_id, race}} label="Experience rate"><%= race.experience_rate %></:col>
+  <:col :let={{_id, race}} label="Need dark to regen"><%= race.need_dark_to_regen %></:col>
+  <:col :let={{_id, race}} label="Need light to regen"><%= race.need_light_to_regen %></:col>
+  <:col :let={{_id, race}} label="Corpse eating"><%= race.corpse_eating %></:col>
+  <:col :let={{_id, race}} label="Average height"><%= race.average_height %></:col>
+  <:col :let={{_id, race}} label="Average weight"><%= race.average_weight %></:col>
+  <:col :let={{_id, race}} label="Description"><%= race.description %></:col>
+  <:action :let={{_id, race}}>
+    <div class="sr-only">
+      <.link navigate={~p"/races/#{race}"}>Show</.link>
+    </div>
+    <.link patch={~p"/races/#{race}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, race}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: race.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="race-modal" show on_cancel={JS.patch(~p"/races")}>
+  <.live_component
+    module={IomdbExWeb.RaceLive.FormComponent}
+    id={@race.id || :new}
+    title={@page_title}
+    action={@live_action}
+    race={@race}
+    patch={~p"/races"}
+  />
+</.modal>

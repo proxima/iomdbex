@@ -1,0 +1,31 @@
+<.header>
+  Slot affect <%= @slot_affect.id %>
+  <:subtitle>This is a slot_affect record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/slot_affects/#{@slot_affect}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit slot_affect</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Value"><%= @slot_affect.value %></:item>
+</.list>
+
+<.back navigate={~p"/slot_affects"}>Back to slot_affects</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="slot_affect-modal"
+  show
+  on_cancel={JS.patch(~p"/slot_affects/#{@slot_affect}")}
+>
+  <.live_component
+    module={IomdbExWeb.SlotAffectLive.FormComponent}
+    id={@slot_affect.id}
+    title={@page_title}
+    action={@live_action}
+    slot_affect={@slot_affect}
+    patch={~p"/slot_affects/#{@slot_affect}"}
+  />
+</.modal>

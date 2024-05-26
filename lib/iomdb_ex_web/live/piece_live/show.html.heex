@@ -1,0 +1,43 @@
+<.header>
+  <%= @piece.name %>
+  <:subtitle>
+    Comes from:
+    <.link
+      patch={~p"/equipment_monsters/#{@piece.equipment_monster.id}"}
+      phx-click={JS.push_focus()}
+    >
+      <%= @piece.equipment_monster.name %>
+    </.link>
+  </:subtitle>
+  <:actions>
+    <.link patch={~p"/equipment_pieces/#{@piece}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit piece</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Class"><%= @piece.klass %></:item>
+  <:item title="Weight"><%= @piece.weight %></:item>
+  <:item title="Special"><%= @piece.special %></:item>
+  <:item title="Tp value"><%= @piece.tp_value %></:item>
+  <:item title="Rufrin price"><%= @piece.rufrin_price %></:item>
+</.list>
+
+<.back navigate={~p"/equipment_pieces"}>Back to equipment_pieces</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="piece-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_pieces/#{@piece}")}
+>
+  <.live_component
+    module={IomdbExWeb.PieceLive.FormComponent}
+    id={@piece.id}
+    title={@page_title}
+    action={@live_action}
+    piece={@piece}
+    patch={~p"/equipment_pieces/#{@piece}"}
+  />
+</.modal>

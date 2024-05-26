@@ -1,0 +1,35 @@
+<.header>
+  Skill train spec <%= @skill_train_spec.id %>
+  <:subtitle>This is a skill_train_spec record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/skill_train_specs/#{@skill_train_spec}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit skill_train_spec</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Level"><%= @skill_train_spec.level %></:item>
+  <:item title="Max"><%= @skill_train_spec.max %></:item>
+</.list>
+
+<.back navigate={~p"/skill_train_specs"}>Back to skill_train_specs</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="skill_train_spec-modal"
+  show
+  on_cancel={JS.patch(~p"/skill_train_specs/#{@skill_train_spec}")}
+>
+  <.live_component
+    module={IomdbExWeb.SkillTrainSpecLive.FormComponent}
+    id={@skill_train_spec.id}
+    title={@page_title}
+    action={@live_action}
+    skill_train_spec={@skill_train_spec}
+    patch={~p"/skill_train_specs/#{@skill_train_spec}"}
+  />
+</.modal>

@@ -1,0 +1,59 @@
+<.header>
+  Listing Equipment mob strategies
+  <:actions>
+    <.link patch={~p"/equipment_mob_strategies/new"}>
+      <.button>New Monster strategy</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="equipment_mob_strategies"
+  rows={@streams.equipment_mob_strategies}
+  row_click={
+    fn {_id, monster_strategy} ->
+      JS.navigate(~p"/equipment_mob_strategies/#{monster_strategy}")
+    end
+  }
+>
+  <:col :let={{_id, monster_strategy}} label="Additional prot info">
+    <%= monster_strategy.additional_prot_info %>
+  </:col>
+  <:col :let={{_id, monster_strategy}} label="Walkthrough">
+    <%= monster_strategy.walkthrough %>
+  </:col>
+  <:col :let={{_id, monster_strategy}} label="Quest mob"><%= monster_strategy.quest_mob %></:col>
+  <:col :let={{_id, monster_strategy}} label="Fight notes">
+    <%= monster_strategy.fight_notes %>
+  </:col>
+  <:action :let={{_id, monster_strategy}}>
+    <div class="sr-only">
+      <.link navigate={~p"/equipment_mob_strategies/#{monster_strategy}"}>Show</.link>
+    </div>
+    <.link patch={~p"/equipment_mob_strategies/#{monster_strategy}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, monster_strategy}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: monster_strategy.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="monster_strategy-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_mob_strategies")}
+>
+  <.live_component
+    module={IomdbExWeb.MonsterStrategyLive.FormComponent}
+    id={@monster_strategy.id || :new}
+    title={@page_title}
+    action={@live_action}
+    monster_strategy={@monster_strategy}
+    patch={~p"/equipment_mob_strategies"}
+  />
+</.modal>

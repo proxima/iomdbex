@@ -1,0 +1,46 @@
+<.header>
+  Listing Spell affects
+  <:actions>
+    <.link patch={~p"/spell_affects/new"}>
+      <.button>New Spell affect</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="spell_affects"
+  rows={@streams.spell_affects}
+  row_click={fn {_id, spell_affect} -> JS.navigate(~p"/spell_affects/#{spell_affect}") end}
+>
+  <:col :let={{_id, spell_affect}} label="Value"><%= spell_affect.value %></:col>
+  <:action :let={{_id, spell_affect}}>
+    <div class="sr-only">
+      <.link navigate={~p"/spell_affects/#{spell_affect}"}>Show</.link>
+    </div>
+    <.link patch={~p"/spell_affects/#{spell_affect}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, spell_affect}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: spell_affect.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="spell_affect-modal"
+  show
+  on_cancel={JS.patch(~p"/spell_affects")}
+>
+  <.live_component
+    module={IomdbExWeb.SpellAffectLive.FormComponent}
+    id={@spell_affect.id || :new}
+    title={@page_title}
+    action={@live_action}
+    spell_affect={@spell_affect}
+    patch={~p"/spell_affects"}
+  />
+</.modal>

@@ -1,0 +1,46 @@
+<.header>
+  Listing Equipment piece list entries
+  <:actions>
+    <.link patch={~p"/equipment_piece_list_entries/new"}>
+      <.button>New Entry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="equipment_piece_list_entries"
+  rows={@streams.equipment_piece_list_entries}
+  row_click={fn {_id, entry} -> JS.navigate(~p"/equipment_piece_list_entries/#{entry}") end}
+>
+  <:col :let={{_id, entry}} label="Dicer"><%= entry.dicer %></:col>
+  <:action :let={{_id, entry}}>
+    <div class="sr-only">
+      <.link navigate={~p"/equipment_piece_list_entries/#{entry}"}>Show</.link>
+    </div>
+    <.link patch={~p"/equipment_piece_list_entries/#{entry}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, entry}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: entry.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="entry-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_piece_list_entries")}
+>
+  <.live_component
+    module={IomdbExWeb.EntryLive.FormComponent}
+    id={@entry.id || :new}
+    title={@page_title}
+    action={@live_action}
+    entry={@entry}
+    patch={~p"/equipment_piece_list_entries"}
+  />
+</.modal>

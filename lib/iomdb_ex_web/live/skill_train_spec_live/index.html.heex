@@ -1,0 +1,49 @@
+<.header>
+  Listing Skill train specs
+  <:actions>
+    <.link patch={~p"/skill_train_specs/new"}>
+      <.button>New Skill train spec</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="skill_train_specs"
+  rows={@streams.skill_train_specs}
+  row_click={
+    fn {_id, skill_train_spec} -> JS.navigate(~p"/skill_train_specs/#{skill_train_spec}") end
+  }
+>
+  <:col :let={{_id, skill_train_spec}} label="Level"><%= skill_train_spec.level %></:col>
+  <:col :let={{_id, skill_train_spec}} label="Max"><%= skill_train_spec.max %></:col>
+  <:action :let={{_id, skill_train_spec}}>
+    <div class="sr-only">
+      <.link navigate={~p"/skill_train_specs/#{skill_train_spec}"}>Show</.link>
+    </div>
+    <.link patch={~p"/skill_train_specs/#{skill_train_spec}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, skill_train_spec}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: skill_train_spec.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="skill_train_spec-modal"
+  show
+  on_cancel={JS.patch(~p"/skill_train_specs")}
+>
+  <.live_component
+    module={IomdbExWeb.SkillTrainSpecLive.FormComponent}
+    id={@skill_train_spec.id || :new}
+    title={@page_title}
+    action={@live_action}
+    skill_train_spec={@skill_train_spec}
+    patch={~p"/skill_train_specs"}
+  />
+</.modal>

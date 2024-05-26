@@ -1,0 +1,53 @@
+<.header>
+  Listing Equipment pieces
+  <:actions>
+    <.link patch={~p"/equipment_pieces/new"}>
+      <.button>New Piece</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="equipment_pieces"
+  rows={@streams.equipment_pieces}
+  row_click={fn {_id, piece} -> JS.navigate(~p"/equipment_pieces/#{piece}") end}
+>
+  <:col :let={{_id, piece}} label="Name"><%= piece.name %></:col>
+  <:col :let={{_id, piece}} label="Class"><%= piece.klass %></:col>
+  <:col :let={{_id, piece}} label="Weight"><%= piece.weight %></:col>
+  <:col :let={{_id, piece}} label="Special"><%= piece.special %></:col>
+  <:col :let={{_id, piece}} label="Tp value"><%= piece.tp_value %></:col>
+  <:col :let={{_id, piece}} label="Rufrin price"><%= piece.rufrin_price %></:col>
+  <:col :let={{_id, piece}} label="Equipment Monster"><%= piece.equipment_monster.name %></:col>
+
+  <:action :let={{_id, piece}}>
+    <div class="sr-only">
+      <.link navigate={~p"/equipment_pieces/#{piece}"}>Show</.link>
+    </div>
+    <.link patch={~p"/equipment_pieces/#{piece}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, piece}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: piece.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="piece-modal"
+  show
+  on_cancel={JS.patch(~p"/equipment_pieces")}
+>
+  <.live_component
+    module={IomdbExWeb.PieceLive.FormComponent}
+    id={@piece.id || :new}
+    title={@page_title}
+    action={@live_action}
+    piece={@piece}
+    patch={~p"/equipment_pieces"}
+  />
+</.modal>

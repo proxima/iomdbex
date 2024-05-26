@@ -1,0 +1,48 @@
+<.header>
+  Listing Guilds
+  <:actions>
+    <.link patch={~p"/guilds/new"}>
+      <.button>New Guild</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="guilds"
+  rows={@streams.guilds}
+  row_click={fn {_id, guild} -> JS.navigate(~p"/guilds/#{guild}") end}
+>
+  <:col :let={{_id, guild}} label="Name"><%= guild.name %></:col>
+  <:col :let={{_id, guild}} label="Location"><%= guild.location %></:col>
+  <:col :let={{_id, guild}} label="Levels"><%= guild.levels %></:col>
+  <:action :let={{_id, guild}}>
+    <div class="sr-only">
+      <.link navigate={~p"/guilds/#{guild}"}>Show</.link>
+    </div>
+    <.link patch={~p"/guilds/#{guild}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, guild}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: guild.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="guild-modal"
+  show
+  on_cancel={JS.patch(~p"/guilds")}
+>
+  <.live_component
+    module={IomdbExWeb.GuildLive.FormComponent}
+    id={@guild.id || :new}
+    title={@page_title}
+    action={@live_action}
+    guild={@guild}
+    patch={~p"/guilds"}
+  />
+</.modal>

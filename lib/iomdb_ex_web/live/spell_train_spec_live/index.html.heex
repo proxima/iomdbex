@@ -1,0 +1,49 @@
+<.header>
+  Listing Spell train specs
+  <:actions>
+    <.link patch={~p"/spell_train_specs/new"}>
+      <.button>New Spell train spec</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="spell_train_specs"
+  rows={@streams.spell_train_specs}
+  row_click={
+    fn {_id, spell_train_spec} -> JS.navigate(~p"/spell_train_specs/#{spell_train_spec}") end
+  }
+>
+  <:col :let={{_id, spell_train_spec}} label="Level"><%= spell_train_spec.level %></:col>
+  <:col :let={{_id, spell_train_spec}} label="Max"><%= spell_train_spec.max %></:col>
+  <:action :let={{_id, spell_train_spec}}>
+    <div class="sr-only">
+      <.link navigate={~p"/spell_train_specs/#{spell_train_spec}"}>Show</.link>
+    </div>
+    <.link patch={~p"/spell_train_specs/#{spell_train_spec}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, spell_train_spec}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: spell_train_spec.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="spell_train_spec-modal"
+  show
+  on_cancel={JS.patch(~p"/spell_train_specs")}
+>
+  <.live_component
+    module={IomdbExWeb.SpellTrainSpecLive.FormComponent}
+    id={@spell_train_spec.id || :new}
+    title={@page_title}
+    action={@live_action}
+    spell_train_spec={@spell_train_spec}
+    patch={~p"/spell_train_specs"}
+  />
+</.modal>
