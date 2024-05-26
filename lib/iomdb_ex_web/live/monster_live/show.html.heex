@@ -1,6 +1,6 @@
 <.header>
-  Monster <%= @monster.id %>
-  <:subtitle>This is a monster record from your database.</:subtitle>
+  <%= @monster.name %>
+  <:subtitle></:subtitle>
   <:actions>
     <.link patch={~p"/equipment_monsters/#{@monster}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit monster</.button>
@@ -8,9 +8,7 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Name"><%= @monster.name %></:item>
-</.list>
+<IndexComponent.render monster={@monster} />
 
 <.back navigate={~p"/equipment_monsters"}>Back to equipment_monsters</.back>
 

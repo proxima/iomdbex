@@ -24,10 +24,10 @@ defmodule IomdbExWeb.PieceLive.Index do
     |> assign(:piece, Equipment.get_piece!(id))
   end
 
-  defp apply_action(socket, :new, _params) do
+  defp apply_action(socket, :new, params) do
     socket
     |> assign(:page_title, "New Piece")
-    |> assign(:piece, %Piece{})
+    |> assign(:piece, %Piece{equipment_monster_id: Map.get(params, "equipment_monster_id")})
   end
 
   defp apply_action(socket, :index, _params) do

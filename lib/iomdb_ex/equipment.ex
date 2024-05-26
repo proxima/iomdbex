@@ -227,7 +227,19 @@ defmodule IomdbEx.Equipment do
       ** (Ecto.NoResultsError)
 
   """
-  def get_monster!(id), do: Repo.get!(Monster, id)
+  def get_monster!(id) do
+    Repo.get!(Monster, id)
+    |> Repo.preload(
+      equipment_pieces: [
+        [skill_affects: :skill],
+        [slot_affects: :slot],
+        [spell_affects: :spell],
+        [stat_affects: :stat],
+        [resistance_affects: :damage_type],
+        [weapon_damage_affects: [:weapon_damage_level, :damage_type]]
+      ]
+    )
+  end
 
   @doc """
   Creates a monster.
