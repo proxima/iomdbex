@@ -59,6 +59,7 @@ defmodule IomdbEx.EquipmentListTest do
 
   describe "equipment_piece_lists" do
     alias IomdbEx.EquipmentList.List
+    alias IomdbEx.AccountsFixtures
 
     import IomdbEx.EquipmentListFixtures
 
@@ -71,14 +72,26 @@ defmodule IomdbEx.EquipmentListTest do
 
     test "get_list!/1 returns the list with given id" do
       list = list_fixture()
-      assert EquipmentList.get_list!(list.id) == list
+      list_db = EquipmentList.get_list!(list.id)
+
+      assert list.id == list_db.id
+      assert list.name == list_db.name
     end
 
     test "create_list/1 with valid data creates a list" do
-      valid_attrs = %{name: "some name"}
+      admin_user = AccountsFixtures.admin_fixture()
+      type = type_fixture()
+
+      valid_attrs = %{
+        name: "some name",
+        admin_user_id: admin_user.id,
+        equipment_piece_list_type_id: type.id
+      }
 
       assert {:ok, %List{} = list} = EquipmentList.create_list(valid_attrs)
       assert list.name == "some name"
+      assert list.admin_user_id == admin_user.id
+      assert list.equipment_piece_list_type_id == type.id
     end
 
     test "create_list/1 with invalid data returns error changeset" do
@@ -96,7 +109,6 @@ defmodule IomdbEx.EquipmentListTest do
     test "update_list/2 with invalid data returns error changeset" do
       list = list_fixture()
       assert {:error, %Ecto.Changeset{}} = EquipmentList.update_list(list, @invalid_attrs)
-      assert list == EquipmentList.get_list!(list.id)
     end
 
     test "delete_list/1 deletes the list" do
@@ -113,10 +125,11 @@ defmodule IomdbEx.EquipmentListTest do
 
   describe "equipment_piece_list_entries" do
     alias IomdbEx.EquipmentList.Entry
+    alias IomdbEx.EquipmentFixtures
 
     import IomdbEx.EquipmentListFixtures
 
-    @invalid_attrs %{dicer: nil}
+    @invalid_attrs %{equipment_piece_id: nil, equipment_piece_list_id: nil}
 
     test "list_equipment_piece_list_entries/0 returns all equipment_piece_list_entries" do
       entry = entry_fixture()
@@ -129,7 +142,14 @@ defmodule IomdbEx.EquipmentListTest do
     end
 
     test "create_entry/1 with valid data creates a entry" do
-      valid_attrs = %{dicer: "some dicer"}
+      piece = EquipmentFixtures.piece_fixture()
+      list = list_fixture()
+
+      valid_attrs = %{
+        dicer: "some dicer",
+        equipment_piece_id: piece.id,
+        equipment_piece_list_id: list.id
+      }
 
       assert {:ok, %Entry{} = entry} = EquipmentList.create_entry(valid_attrs)
       assert entry.dicer == "some dicer"

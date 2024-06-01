@@ -1,4 +1,6 @@
 defmodule IomdbEx.GuildsFixtures do
+  alias IomdbEx.GuildFixtures
+
   @moduledoc """
   This module defines test helpers for creating
   entities via the `IomdbEx.Guilds` context.
@@ -8,6 +10,10 @@ defmodule IomdbEx.GuildsFixtures do
   Generate a guild.
   """
   def guild_fixture(attrs \\ %{}) do
+    guild_type = GuildFixtures.guild_type_fixture()
+
+    attrs = Map.merge(attrs, %{guild_type_id: guild_type.id})
+
     {:ok, guild} =
       attrs
       |> Enum.into(%{

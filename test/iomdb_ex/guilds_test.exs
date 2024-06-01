@@ -8,7 +8,7 @@ defmodule IomdbEx.GuildsTest do
 
     import IomdbEx.GuildsFixtures
 
-    @invalid_attrs %{name: nil, location: nil, levels: nil}
+    @invalid_attrs %{name: nil, location: nil, levels: nil, guild_type_id: nil}
 
     test "list_guilds/0 returns all guilds" do
       guild = guild_fixture()
@@ -21,12 +21,13 @@ defmodule IomdbEx.GuildsTest do
     end
 
     test "create_guild/1 with valid data creates a guild" do
-      valid_attrs = %{name: "some name", location: "some location", levels: 42}
+      valid_attrs = %{name: "some name", location: "some location", levels: 42, guild_type_id: 1}
 
       assert {:ok, %Guild{} = guild} = Guilds.create_guild(valid_attrs)
       assert guild.name == "some name"
       assert guild.location == "some location"
       assert guild.levels == 42
+      assert guild.guild_type_id == 1
     end
 
     test "create_guild/1 with invalid data returns error changeset" do
@@ -35,12 +36,19 @@ defmodule IomdbEx.GuildsTest do
 
     test "update_guild/2 with valid data updates the guild" do
       guild = guild_fixture()
-      update_attrs = %{name: "some updated name", location: "some updated location", levels: 43}
+
+      update_attrs = %{
+        name: "some updated name",
+        location: "some updated location",
+        levels: 43,
+        guild_type_id: 2
+      }
 
       assert {:ok, %Guild{} = guild} = Guilds.update_guild(guild, update_attrs)
       assert guild.name == "some updated name"
       assert guild.location == "some updated location"
       assert guild.levels == 43
+      assert guild.guild_type_id == 2
     end
 
     test "update_guild/2 with invalid data returns error changeset" do

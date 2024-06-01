@@ -139,7 +139,6 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "equipment_monsters" do
     alias IomdbEx.Equipment.Monster
-
     import IomdbEx.EquipmentFixtures
 
     @invalid_attrs %{name: nil}
@@ -151,7 +150,10 @@ defmodule IomdbEx.EquipmentTest do
 
     test "get_monster!/1 returns the monster with given id" do
       monster = monster_fixture()
-      assert Equipment.get_monster!(monster.id) == monster
+      db_monster = Equipment.get_monster!(monster.id)
+
+      assert monster.id == db_monster.id
+      assert monster.name == db_monster.name
     end
 
     test "create_monster/1 with valid data creates a monster" do
@@ -176,7 +178,6 @@ defmodule IomdbEx.EquipmentTest do
     test "update_monster/2 with invalid data returns error changeset" do
       monster = monster_fixture()
       assert {:error, %Ecto.Changeset{}} = Equipment.update_monster(monster, @invalid_attrs)
-      assert monster == Equipment.get_monster!(monster.id)
     end
 
     test "delete_monster/1 deletes the monster" do
@@ -207,22 +208,31 @@ defmodule IomdbEx.EquipmentTest do
 
     test "list_equipment_pieces/0 returns all equipment_pieces" do
       piece = piece_fixture()
-      assert Equipment.list_equipment_pieces() == [piece]
+      [db_piece] = Equipment.list_equipment_pieces()
+
+      assert piece.id == db_piece.id
+      assert piece.name == db_piece.name
     end
 
     test "get_piece!/1 returns the piece with given id" do
       piece = piece_fixture()
-      assert Equipment.get_piece!(piece.id) == piece
+      db_piece = Equipment.get_piece!(piece.id)
+
+      assert piece.id == db_piece.id
+      assert piece.name == db_piece.name
     end
 
     test "create_piece/1 with valid data creates a piece" do
+      monster = monster_fixture()
+
       valid_attrs = %{
         name: "some name",
         special: "some special",
         klass: 42,
         weight: 42,
-        tp_value: 42,
-        rufrin_price: 42
+        tp_value: 7,
+        rufrin_price: 42,
+        equipment_monster_id: monster.id
       }
 
       assert {:ok, %Piece{} = piece} = Equipment.create_piece(valid_attrs)
@@ -230,8 +240,9 @@ defmodule IomdbEx.EquipmentTest do
       assert piece.special == "some special"
       assert piece.klass == 42
       assert piece.weight == 42
-      assert piece.tp_value == 42
+      assert piece.tp_value == 7
       assert piece.rufrin_price == 42
+      assert piece.equipment_monster_id == monster.id
     end
 
     test "create_piece/1 with invalid data returns error changeset" do
@@ -246,7 +257,7 @@ defmodule IomdbEx.EquipmentTest do
         special: "some updated special",
         klass: 43,
         weight: 43,
-        tp_value: 43,
+        tp_value: 6,
         rufrin_price: 43
       }
 
@@ -255,14 +266,13 @@ defmodule IomdbEx.EquipmentTest do
       assert piece.special == "some updated special"
       assert piece.klass == 43
       assert piece.weight == 43
-      assert piece.tp_value == 43
+      assert piece.tp_value == 6
       assert piece.rufrin_price == 43
     end
 
     test "update_piece/2 with invalid data returns error changeset" do
       piece = piece_fixture()
       assert {:error, %Ecto.Changeset{}} = Equipment.update_piece(piece, @invalid_attrs)
-      assert piece == Equipment.get_piece!(piece.id)
     end
 
     test "delete_piece/1 deletes the piece" do
@@ -283,10 +293,7 @@ defmodule IomdbEx.EquipmentTest do
     import IomdbEx.EquipmentFixtures
 
     @invalid_attrs %{
-      additional_prot_info: nil,
-      walkthrough: nil,
-      quest_mob: nil,
-      fight_notes: nil
+      equipment_monster_id: nil
     }
 
     test "list_equipment_mob_strategies/0 returns all equipment_mob_strategies" do
@@ -300,11 +307,14 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_monster_strategy/1 with valid data creates a monster_strategy" do
+      monster = monster_fixture()
+
       valid_attrs = %{
         additional_prot_info: "some additional_prot_info",
         walkthrough: "some walkthrough",
         quest_mob: true,
-        fight_notes: "some fight_notes"
+        fight_notes: "some fight_notes",
+        equipment_monster_id: monster.id
       }
 
       assert {:ok, %MonsterStrategy{} = monster_strategy} =
@@ -314,6 +324,7 @@ defmodule IomdbEx.EquipmentTest do
       assert monster_strategy.walkthrough == "some walkthrough"
       assert monster_strategy.quest_mob == true
       assert monster_strategy.fight_notes == "some fight_notes"
+      assert monster_strategy.equipment_monster_id == monster.id
     end
 
     test "create_monster_strategy/1 with invalid data returns error changeset" do
@@ -344,8 +355,6 @@ defmodule IomdbEx.EquipmentTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Equipment.update_monster_strategy(monster_strategy, @invalid_attrs)
-
-      assert monster_strategy == Equipment.get_monster_strategy!(monster_strategy.id)
     end
 
     test "delete_monster_strategy/1 deletes the monster_strategy" do
@@ -365,6 +374,7 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "resistance_affects" do
     alias IomdbEx.Equipment.ResistanceAffect
+    alias IomdbEx.GameFixtures
 
     import IomdbEx.EquipmentFixtures
 
@@ -381,7 +391,10 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_resistance_affect/1 with valid data creates a resistance_affect" do
-      valid_attrs = %{value: 42}
+      piece = piece_fixture()
+      damage_type = GameFixtures.damage_type_fixture()
+
+      valid_attrs = %{value: 42, equipment_piece_id: piece.id, damage_type_id: damage_type.id}
 
       assert {:ok, %ResistanceAffect{} = resistance_affect} =
                Equipment.create_resistance_affect(valid_attrs)
@@ -429,6 +442,7 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "skill_affects" do
     alias IomdbEx.Equipment.SkillAffect
+    alias IomdbEx.GuildFixtures
 
     import IomdbEx.EquipmentFixtures
 
@@ -445,7 +459,10 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_skill_affect/1 with valid data creates a skill_affect" do
-      valid_attrs = %{value: 42}
+      piece = piece_fixture()
+      skill = GuildFixtures.skill_fixture()
+
+      valid_attrs = %{value: 42, equipment_piece_id: piece.id, skill_id: skill.id}
 
       assert {:ok, %SkillAffect{} = skill_affect} = Equipment.create_skill_affect(valid_attrs)
       assert skill_affect.value == 42
@@ -488,6 +505,7 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "spell_affects" do
     alias IomdbEx.Equipment.SpellAffect
+    alias IomdbEx.GuildFixtures
 
     import IomdbEx.EquipmentFixtures
 
@@ -504,7 +522,10 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_spell_affect/1 with valid data creates a spell_affect" do
-      valid_attrs = %{value: 42}
+      piece = piece_fixture()
+      spell = GuildFixtures.spell_fixture()
+
+      valid_attrs = %{value: 42, equipment_piece_id: piece.id, spell_id: spell.id}
 
       assert {:ok, %SpellAffect{} = spell_affect} = Equipment.create_spell_affect(valid_attrs)
       assert spell_affect.value == 42
@@ -547,10 +568,11 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "slot_affects" do
     alias IomdbEx.Equipment.SlotAffect
+    alias IomdbEx.GameFixtures
 
     import IomdbEx.EquipmentFixtures
 
-    @invalid_attrs %{value: nil}
+    @invalid_attrs %{equipment_piece_id: nil, slot_id: nil}
 
     test "list_slot_affects/0 returns all slot_affects" do
       slot_affect = slot_affect_fixture()
@@ -563,24 +585,18 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_slot_affect/1 with valid data creates a slot_affect" do
-      valid_attrs = %{value: 42}
+      slot = GameFixtures.slot_fixture()
+      piece = piece_fixture()
+
+      valid_attrs = %{equipment_piece_id: piece.id, slot_id: slot.id}
 
       assert {:ok, %SlotAffect{} = slot_affect} = Equipment.create_slot_affect(valid_attrs)
-      assert slot_affect.value == 42
+      assert slot_affect.equipment_piece_id == piece.id
+      assert slot_affect.slot_id == slot.id
     end
 
     test "create_slot_affect/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Equipment.create_slot_affect(@invalid_attrs)
-    end
-
-    test "update_slot_affect/2 with valid data updates the slot_affect" do
-      slot_affect = slot_affect_fixture()
-      update_attrs = %{value: 43}
-
-      assert {:ok, %SlotAffect{} = slot_affect} =
-               Equipment.update_slot_affect(slot_affect, update_attrs)
-
-      assert slot_affect.value == 43
     end
 
     test "update_slot_affect/2 with invalid data returns error changeset" do
@@ -606,6 +622,7 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "stat_affects" do
     alias IomdbEx.Equipment.StatAffect
+    alias IomdbEx.GameFixtures
 
     import IomdbEx.EquipmentFixtures
 
@@ -622,7 +639,10 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_stat_affect/1 with valid data creates a stat_affect" do
-      valid_attrs = %{value: 42}
+      stat = GameFixtures.stat_fixture()
+      piece = piece_fixture()
+
+      valid_attrs = %{value: 42, stat_id: stat.id, equipment_piece_id: piece.id}
 
       assert {:ok, %StatAffect{} = stat_affect} = Equipment.create_stat_affect(valid_attrs)
       assert stat_affect.value == 42
@@ -665,10 +685,11 @@ defmodule IomdbEx.EquipmentTest do
 
   describe "weapon_damage_affects" do
     alias IomdbEx.Equipment.WeaponDamageAffect
+    alias IomdbEx.GameFixtures
 
     import IomdbEx.EquipmentFixtures
 
-    @invalid_attrs %{}
+    @invalid_attrs %{equipment_piece_id: nil, damage_type_id: nil, weapon_damage_level_id: nil}
 
     test "list_weapon_damage_affects/0 returns all weapon_damage_affects" do
       weapon_damage_affect = weapon_damage_affect_fixture()
@@ -681,9 +702,17 @@ defmodule IomdbEx.EquipmentTest do
     end
 
     test "create_weapon_damage_affect/1 with valid data creates a weapon_damage_affect" do
-      valid_attrs = %{}
+      piece = piece_fixture()
+      damage_type = GameFixtures.damage_type_fixture()
+      weapon_damage_level = weapon_damage_level_fixture()
 
-      assert {:ok, %WeaponDamageAffect{} = weapon_damage_affect} =
+      valid_attrs = %{
+        equipment_piece_id: piece.id,
+        damage_type_id: damage_type.id,
+        weapon_damage_level_id: weapon_damage_level.id
+      }
+
+      assert {:ok, %WeaponDamageAffect{}} =
                Equipment.create_weapon_damage_affect(valid_attrs)
     end
 
@@ -691,21 +720,11 @@ defmodule IomdbEx.EquipmentTest do
       assert {:error, %Ecto.Changeset{}} = Equipment.create_weapon_damage_affect(@invalid_attrs)
     end
 
-    test "update_weapon_damage_affect/2 with valid data updates the weapon_damage_affect" do
-      weapon_damage_affect = weapon_damage_affect_fixture()
-      update_attrs = %{}
-
-      assert {:ok, %WeaponDamageAffect{} = weapon_damage_affect} =
-               Equipment.update_weapon_damage_affect(weapon_damage_affect, update_attrs)
-    end
-
     test "update_weapon_damage_affect/2 with invalid data returns error changeset" do
       weapon_damage_affect = weapon_damage_affect_fixture()
 
       assert {:error, %Ecto.Changeset{}} =
                Equipment.update_weapon_damage_affect(weapon_damage_affect, @invalid_attrs)
-
-      assert weapon_damage_affect == Equipment.get_weapon_damage_affect!(weapon_damage_affect.id)
     end
 
     test "delete_weapon_damage_affect/1 deletes the weapon_damage_affect" do

@@ -189,7 +189,7 @@ defmodule IomdbEx.GuildTest do
     end
 
     test "create_skill_train_spec/1 with valid data creates a skill_train_spec" do
-      valid_attrs = %{max: 42, level: 42}
+      valid_attrs = %{max: 42, level: 42, guild_id: 1, skill_id: 1}
 
       assert {:ok, %SkillTrainSpec{} = skill_train_spec} =
                Guild.create_skill_train_spec(valid_attrs)
@@ -204,13 +204,15 @@ defmodule IomdbEx.GuildTest do
 
     test "update_skill_train_spec/2 with valid data updates the skill_train_spec" do
       skill_train_spec = skill_train_spec_fixture()
-      update_attrs = %{max: 43, level: 43}
+      update_attrs = %{max: 43, level: 43, guild_id: 2, skill_id: 2}
 
       assert {:ok, %SkillTrainSpec{} = skill_train_spec} =
                Guild.update_skill_train_spec(skill_train_spec, update_attrs)
 
       assert skill_train_spec.max == 43
       assert skill_train_spec.level == 43
+      assert skill_train_spec.guild_id == 2
+      assert skill_train_spec.skill_id == 2
     end
 
     test "update_skill_train_spec/2 with invalid data returns error changeset" do
@@ -252,13 +254,15 @@ defmodule IomdbEx.GuildTest do
     end
 
     test "create_spell_train_spec/1 with valid data creates a spell_train_spec" do
-      valid_attrs = %{max: 42, level: 42}
+      valid_attrs = %{max: 42, level: 42, guild_id: 1, spell_id: 1}
 
       assert {:ok, %SpellTrainSpec{} = spell_train_spec} =
                Guild.create_spell_train_spec(valid_attrs)
 
       assert spell_train_spec.max == 42
       assert spell_train_spec.level == 42
+      assert spell_train_spec.guild_id == 1
+      assert spell_train_spec.spell_id == 1
     end
 
     test "create_spell_train_spec/1 with invalid data returns error changeset" do
@@ -267,13 +271,15 @@ defmodule IomdbEx.GuildTest do
 
     test "update_spell_train_spec/2 with valid data updates the spell_train_spec" do
       spell_train_spec = spell_train_spec_fixture()
-      update_attrs = %{max: 43, level: 43}
+      update_attrs = %{max: 43, level: 43, guild_id: 2, spell_id: 2}
 
       assert {:ok, %SpellTrainSpec{} = spell_train_spec} =
                Guild.update_spell_train_spec(spell_train_spec, update_attrs)
 
       assert spell_train_spec.max == 43
       assert spell_train_spec.level == 43
+      assert spell_train_spec.guild_id == 2
+      assert spell_train_spec.spell_id == 2
     end
 
     test "update_spell_train_spec/2 with invalid data returns error changeset" do
