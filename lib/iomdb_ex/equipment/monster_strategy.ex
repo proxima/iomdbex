@@ -28,7 +28,7 @@ defmodule IomdbEx.Equipment.MonsterStrategy do
       :fight_notes,
       :equipment_monster_id,
       :greater_tank_prot_id,
-      :lesser_tank_prod1_id,
+      :lesser_tank_prot1_id,
       :lesser_tank_prot2_id,
       :greater_party_prot_id,
       :lesser_party_prot1_id,

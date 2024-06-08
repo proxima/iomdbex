@@ -9,18 +9,18 @@
       </p>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
-      </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
-      </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
+      <.link patch={~p"/equipment_pieces"} class="hover:text-zinc-700">
+        Pieces
+      </.link>
+      <.link patch={~p"/equipment_monsters"} class="hover:text-zinc-700">
+        Monsters
+      </.link>
+      <.link patch={~p"/equipment_piece_lists"} class="hover:text-zinc-700">
+        Lists
+      </.link>
+      <.link patch={~p"/"} class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80">
         Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
+      </.link>
     </div>
   </div>
 </header>

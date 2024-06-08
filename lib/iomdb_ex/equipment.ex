@@ -318,10 +318,33 @@ defmodule IomdbEx.Equipment do
 
   """
   def list_equipment_pieces do
-    query = from p in Piece, limit: 50
+    options = %{sort_by: :name, sort_order: :asc, page: 0, per_page: 50}
 
-    Repo.all(query)
-    |> Repo.preload([
+    list_equipment_pieces(options)
+    |> pieces_with_preloads()
+  end
+
+  @doc """
+  Returns the list of equipment_pieces given the specified options.
+
+  ## Examples
+
+      iex> list_equipment_pieces()
+      [%Piece{}, ...]
+
+  """
+  def list_equipment_pieces(options) when is_map(options) do
+    query =
+      from(Piece)
+      |> sort(options)
+      |> paginate(options)
+      |> Repo.all()
+
+    pieces_with_preloads(query)
+  end
+
+  defp pieces_with_preloads(query) do
+    Repo.preload(query, [
       :equipment_monster,
       [skill_affects: :skill],
       [slot_affects: :slot],
@@ -331,6 +354,22 @@ defmodule IomdbEx.Equipment do
       [weapon_damage_affects: [:weapon_damage_level, :damage_type]]
     ])
   end
+
+  defp sort(query, %{sort_by: sort_by, sort_order: sort_order}) do
+    order_by(query, {^sort_order, ^sort_by})
+  end
+
+  defp sort(query, _options), do: query
+
+  defp paginate(query, %{page: page, per_page: per_page}) do
+    offset = max((page - 1) * per_page, 0)
+
+    query
+    |> limit(^per_page)
+    |> offset(^offset)
+  end
+
+  defp paginate(query, _options), do: query
 
   @doc """
   Gets a single piece.

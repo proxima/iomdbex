@@ -131,7 +131,10 @@ defmodule IomdbEx.EquipmentList do
       ** (Ecto.NoResultsError)
 
   """
-  def get_list!(id), do: Repo.get!(List, id)
+  def get_list!(id) do
+    Repo.get!(List, id)
+    |> Repo.preload([:admin_user, :equipment_pieces])
+  end
 
   @doc """
   Creates a list.
@@ -210,7 +213,8 @@ defmodule IomdbEx.EquipmentList do
 
   """
   def list_equipment_piece_list_entries do
-    Repo.all(Entry)
+    query = from e in Entry, limit: 50
+    Repo.all(query)
   end
 
   @doc """

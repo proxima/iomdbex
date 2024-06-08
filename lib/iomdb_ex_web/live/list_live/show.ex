@@ -2,6 +2,7 @@ defmodule IomdbExWeb.ListLive.Show do
   use IomdbExWeb, :live_view
 
   alias IomdbEx.EquipmentList
+  alias IomdbExWeb.Components.Piece.IndexComponent
 
   @impl true
   def mount(_params, _session, socket) do

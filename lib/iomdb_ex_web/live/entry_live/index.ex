@@ -25,10 +25,10 @@ defmodule IomdbExWeb.EntryLive.Index do
     |> assign(:entry, EquipmentList.get_entry!(id))
   end
 
-  defp apply_action(socket, :new, _params) do
+  defp apply_action(socket, :new, params) do
     socket
     |> assign(:page_title, "New Entry")
-    |> assign(:entry, %Entry{})
+    |> assign(:entry, %Entry{equipment_piece_list_id: Map.get(params, "equipment_piece_list_id")})
   end
 
   defp apply_action(socket, :index, _params) do

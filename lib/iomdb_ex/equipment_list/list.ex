@@ -7,6 +7,11 @@ defmodule IomdbEx.EquipmentList.List do
     belongs_to :admin_user, IomdbEx.Accounts.Admin
     belongs_to :equipment_piece_list_type, IomdbEx.EquipmentList.Type
 
+    has_many :equipment_piece_list_entries, IomdbEx.EquipmentList.Entry,
+      foreign_key: :equipment_piece_list_id
+
+    has_many :equipment_pieces, through: [:equipment_piece_list_entries, :equipment_piece]
+
     timestamps(type: :utc_datetime, inserted_at: :created_at)
   end
 

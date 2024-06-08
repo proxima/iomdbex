@@ -1,6 +1,6 @@
 <.header>
-  List <%= @list.id %>
-  <:subtitle>This is a list record from your database.</:subtitle>
+  <%= @list.name %>
+  <:subtitle>Owned by <%= @list.admin_user.login %></:subtitle>
   <:actions>
     <.link patch={~p"/equipment_piece_lists/#{@list}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit list</.button>
@@ -8,9 +8,7 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Name"><%= @list.name %></:item>
-</.list>
+<IndexComponent.render owner={@list} />
 
 <.back navigate={~p"/equipment_piece_lists"}>Back to equipment_piece_lists</.back>
 
