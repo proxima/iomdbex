@@ -13,7 +13,11 @@ defmodule IomdbEx.Equipment.Piece do
     belongs_to :equipment_monster, IomdbEx.Equipment.Monster
 
     has_many :skill_affects, IomdbEx.Equipment.SkillAffect, foreign_key: :equipment_piece_id
-    has_many :slot_affects, IomdbEx.Equipment.SlotAffect, foreign_key: :equipment_piece_id
+
+    has_many :slot_affects, IomdbEx.Equipment.SlotAffect,
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
+
     has_many :spell_affects, IomdbEx.Equipment.SpellAffect, foreign_key: :equipment_piece_id
     has_many :stat_affects, IomdbEx.Equipment.StatAffect, foreign_key: :equipment_piece_id
 
@@ -52,5 +56,14 @@ defmodule IomdbEx.Equipment.Piece do
       greater_than_or_equal_to: 0,
       message: "Enter a number zero or greater"
     )
+    |> cast_assoc(:skill_affects)
+    |> cast_assoc(:slot_affects,
+      sort_param: :slot_affects_sort,
+      drop_param: :slot_affects_drop
+    )
+    |> cast_assoc(:spell_affects)
+    |> cast_assoc(:stat_affects)
+    |> cast_assoc(:resistance_affects)
+    |> cast_assoc(:weapon_damage_affects)
   end
 end

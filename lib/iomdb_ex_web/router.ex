@@ -79,12 +79,6 @@ defmodule IomdbExWeb.Router do
     live "/spell_affects/:id", SpellAffectLive.Show, :show
     live "/spell_affects/:id/show/edit", SpellAffectLive.Show, :edit
 
-    live "/slot_affects", SlotAffectLive.Index, :index
-    live "/slot_affects/new", SlotAffectLive.Index, :new
-    live "/slot_affects/:id/edit", SlotAffectLive.Index, :edit
-    live "/slot_affects/:id", SlotAffectLive.Show, :show
-    live "/slot_affects/:id/show/edit", SlotAffectLive.Show, :edit
-
     live "/stat_affects", StatAffectLive.Index, :index
     live "/stat_affects/new", StatAffectLive.Index, :new
     live "/stat_affects/:id/edit", StatAffectLive.Index, :edit

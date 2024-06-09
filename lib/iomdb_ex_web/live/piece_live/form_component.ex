@@ -20,17 +20,46 @@ defmodule IomdbExWeb.PieceLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:klass]} type="number" label="Klass" />
-        <.input field={@form[:weight]} type="number" label="Weight" />
-        <.input field={@form[:special]} type="text" label="Special" />
-        <.input field={@form[:tp_value]} type="number" label="Tp value" />
-        <.input field={@form[:rufrin_price]} type="number" label="Rufrin price" />
         <.input
           field={@form[:equipment_monster_id]}
           type="select"
           label="Equipment Monster"
           options={Enum.map(Equipment.list_equipment_monsters(), &{&1.name, &1.id})}
         />
+        <.input field={@form[:tp_value]} type="number" label="Tp value" phx-debounce="blur" />
+        <.input field={@form[:special]} type="text" label="Special" />
+        <.input field={@form[:klass]} type="number" label="Class" />
+        <.input field={@form[:weight]} type="number" label="Weight" />
+        <.input field={@form[:rufrin_price]} type="number" label="Rufrin price" />
+
+        <%= if @action == :edit do %>
+          <IomdbExWeb.Components.Piece.SlotAffectsFormComponent.render form={@form} />
+          <%!-- <% # Stats %>
+        <.link patch={~p"/stat_affects/new"}>
+          <.button><.icon name="hero-plus" class="h-3 w-3" />Stat</.button>
+        </.link>
+
+        <% # Skills %>
+        <.link patch={~p"/skill_affects/new"}>
+          <.button><.icon name="hero-plus" class="h-3 w-3" />Skill</.button>
+        </.link>
+
+        <% # Spells %>
+        <.link patch={~p"/spell_affects/new"}>
+          <.button><.icon name="hero-plus" class="h-3 w-3" />Spell</.button>
+        </.link>
+
+        <% # Resists %>
+        <.link patch={~p"/resistance_affects/new"}>
+          <.button><.icon name="hero-plus" class="h-3 w-3" />Resist</.button>
+        </.link>
+
+        <% # Weapon damage affects %>
+        <.link patch={~p"/weapon_damage_affects/new"}>
+          <.button><.icon name="hero-plus" class="h-3 w-3" />Dtype</.button>
+        </.link> --%>
+        <% end %>
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Piece</.button>
         </:actions>

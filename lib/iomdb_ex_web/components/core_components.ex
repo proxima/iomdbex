@@ -291,6 +291,7 @@ defmodule IomdbExWeb.CoreComponents do
                 multiple pattern placeholder readonly required rows size step)
 
   slot :inner_block
+  slot :label_action
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
@@ -330,7 +331,7 @@ defmodule IomdbExWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}><%= @label %><%= render_slot(@label_action) %></.label>
       <select
         id={@id}
         name={@name}
@@ -349,7 +350,7 @@ defmodule IomdbExWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}><%= @label %><%= render_slot(@label_action) %></.label>
       <textarea
         id={@id}
         name={@name}
@@ -370,7 +371,7 @@ defmodule IomdbExWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}><%= @label %><%= render_slot(@label_action) %></.label>
       <input
         type={@type}
         name={@name}
