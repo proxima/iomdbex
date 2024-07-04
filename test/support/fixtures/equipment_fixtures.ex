@@ -170,52 +170,6 @@ defmodule IomdbEx.EquipmentFixtures do
   end
 
   @doc """
-  Generate a slot_affect.
-  """
-  def slot_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    slot = GameFixtures.slot_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        slot_id: slot.id
-      })
-
-    {:ok, slot_affect} =
-      attrs
-      |> Enum.into(%{
-        value: 42
-      })
-      |> IomdbEx.Equipment.create_slot_affect()
-
-    slot_affect
-  end
-
-  @doc """
-  Generate a stat_affect.
-  """
-  def stat_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    stat = GameFixtures.stat_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        stat_id: stat.id
-      })
-
-    {:ok, stat_affect} =
-      attrs
-      |> Enum.into(%{
-        value: 42
-      })
-      |> IomdbEx.Equipment.create_stat_affect()
-
-    stat_affect
-  end
-
-  @doc """
   Generate a weapon_damage_affect.
   """
   def weapon_damage_affect_fixture(attrs \\ %{}) do

@@ -344,7 +344,11 @@ defmodule IomdbEx.Equipment do
   end
 
   defp pieces_with_preloads(query) do
-    Repo.preload(query, [
+    Repo.preload(query, pieces_preloads())
+  end
+
+  defp pieces_preloads() do
+    [
       :equipment_monster,
       [skill_affects: :skill],
       [slot_affects: :slot],
@@ -352,7 +356,7 @@ defmodule IomdbEx.Equipment do
       [stat_affects: :stat],
       [resistance_affects: :damage_type],
       [weapon_damage_affects: [:weapon_damage_level, :damage_type]]
-    ])
+    ]
   end
 
   defp sort(query, %{sort_by: sort_by, sort_order: sort_order}) do
@@ -387,15 +391,7 @@ defmodule IomdbEx.Equipment do
   """
   def get_piece!(id) do
     Repo.get!(Piece, id)
-    |> Repo.preload([
-      :equipment_monster,
-      [skill_affects: :skill],
-      [slot_affects: :slot],
-      [spell_affects: :spell],
-      [stat_affects: :stat],
-      [resistance_affects: :damage_type],
-      [weapon_damage_affects: [:weapon_damage_level, :damage_type]]
-    ])
+    |> Repo.preload(pieces_preloads())
   end
 
   @doc """
@@ -411,9 +407,15 @@ defmodule IomdbEx.Equipment do
 
   """
   def create_piece(attrs \\ %{}) do
-    %Piece{}
-    |> Piece.changeset(attrs)
-    |> Repo.insert()
+    case %Piece{}
+         |> Piece.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, piece} ->
+        {:ok, Repo.preload(piece, pieces_preloads())}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -429,9 +431,15 @@ defmodule IomdbEx.Equipment do
 
   """
   def update_piece(%Piece{} = piece, attrs) do
-    piece
-    |> Piece.changeset(attrs)
-    |> Repo.update()
+    case piece
+         |> Piece.changeset(attrs)
+         |> Repo.update() do
+      {:ok, piece} ->
+        {:ok, Repo.preload(piece, pieces_preloads())}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -845,102 +853,6 @@ defmodule IomdbEx.Equipment do
   """
   def change_spell_affect(%SpellAffect{} = spell_affect, attrs \\ %{}) do
     SpellAffect.changeset(spell_affect, attrs)
-  end
-
-  alias IomdbEx.Equipment.StatAffect
-
-  @doc """
-  Returns the list of stat_affects.
-
-  ## Examples
-
-      iex> list_stat_affects()
-      [%StatAffect{}, ...]
-
-  """
-  def list_stat_affects do
-    Repo.all(StatAffect)
-  end
-
-  @doc """
-  Gets a single stat_affect.
-
-  Raises `Ecto.NoResultsError` if the Stat affect does not exist.
-
-  ## Examples
-
-      iex> get_stat_affect!(123)
-      %StatAffect{}
-
-      iex> get_stat_affect!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_stat_affect!(id), do: Repo.get!(StatAffect, id)
-
-  @doc """
-  Creates a stat_affect.
-
-  ## Examples
-
-      iex> create_stat_affect(%{field: value})
-      {:ok, %StatAffect{}}
-
-      iex> create_stat_affect(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_stat_affect(attrs \\ %{}) do
-    %StatAffect{}
-    |> StatAffect.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a stat_affect.
-
-  ## Examples
-
-      iex> update_stat_affect(stat_affect, %{field: new_value})
-      {:ok, %StatAffect{}}
-
-      iex> update_stat_affect(stat_affect, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_stat_affect(%StatAffect{} = stat_affect, attrs) do
-    stat_affect
-    |> StatAffect.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a stat_affect.
-
-  ## Examples
-
-      iex> delete_stat_affect(stat_affect)
-      {:ok, %StatAffect{}}
-
-      iex> delete_stat_affect(stat_affect)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_stat_affect(%StatAffect{} = stat_affect) do
-    Repo.delete(stat_affect)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking stat_affect changes.
-
-  ## Examples
-
-      iex> change_stat_affect(stat_affect)
-      %Ecto.Changeset{data: %StatAffect{}}
-
-  """
-  def change_stat_affect(%StatAffect{} = stat_affect, attrs \\ %{}) do
-    StatAffect.changeset(stat_affect, attrs)
   end
 
   alias IomdbEx.Equipment.WeaponDamageAffect

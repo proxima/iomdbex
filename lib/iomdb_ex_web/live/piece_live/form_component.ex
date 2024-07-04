@@ -1,7 +1,7 @@
 defmodule IomdbExWeb.PieceLive.FormComponent do
   use IomdbExWeb, :live_component
 
-  alias IomdbEx.Equipment
+  alias IomdbEx.{Game, Equipment}
 
   @impl true
   def render(assigns) do
@@ -33,11 +33,24 @@ defmodule IomdbExWeb.PieceLive.FormComponent do
         <.input field={@form[:rufrin_price]} type="number" label="Rufrin price" />
 
         <%= if @action == :edit do %>
-          <IomdbExWeb.Components.Piece.SlotAffectsFormComponent.render form={@form} />
-          <%!-- <% # Stats %>
-        <.link patch={~p"/stat_affects/new"}>
-          <.button><.icon name="hero-plus" class="h-3 w-3" />Stat</.button>
-        </.link>
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:slot_affects}
+            dropdown_title="Slot"
+            dropdown_fn={&Game.list_slots/0}
+            value={false}
+            }
+          />
+
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:stat_affects}
+            dropdown_title="Stat"
+            dropdown_fn={&Game.list_stats/0}
+            value={true}
+          />
+
+          <%!--
 
         <% # Skills %>
         <.link patch={~p"/skill_affects/new"}>

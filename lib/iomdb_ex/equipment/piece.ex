@@ -19,7 +19,10 @@ defmodule IomdbEx.Equipment.Piece do
       on_replace: :delete
 
     has_many :spell_affects, IomdbEx.Equipment.SpellAffect, foreign_key: :equipment_piece_id
-    has_many :stat_affects, IomdbEx.Equipment.StatAffect, foreign_key: :equipment_piece_id
+
+    has_many :stat_affects, IomdbEx.Equipment.StatAffect,
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
 
     has_many :resistance_affects, IomdbEx.Equipment.ResistanceAffect,
       foreign_key: :equipment_piece_id
@@ -51,7 +54,7 @@ defmodule IomdbEx.Equipment.Piece do
       greater_than_or_equal_to: 0,
       message: "Enter a number zero or greater"
     )
-    |> validate_inclusion(:tp_value, 0..10, message: "TP values range 1 through 10")
+    |> validate_inclusion(:tp_value, 0..10, message: "TP values range from 0 through 10")
     |> validate_number(:rufrin_price,
       greater_than_or_equal_to: 0,
       message: "Enter a number zero or greater"
@@ -62,7 +65,10 @@ defmodule IomdbEx.Equipment.Piece do
       drop_param: :slot_affects_drop
     )
     |> cast_assoc(:spell_affects)
-    |> cast_assoc(:stat_affects)
+    |> cast_assoc(:stat_affects,
+      sort_param: :stat_affects_sort,
+      drop_param: :stat_affects_drop
+    )
     |> cast_assoc(:resistance_affects)
     |> cast_assoc(:weapon_damage_affects)
   end
