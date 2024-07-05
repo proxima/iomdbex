@@ -1,6 +1,4 @@
 defmodule IomdbEx.EquipmentFixtures do
-  alias IomdbEx.{GameFixtures, GuildFixtures}
-
   @moduledoc """
   This module defines test helpers for creating
   entities via the `IomdbEx.Equipment` context.
@@ -98,97 +96,5 @@ defmodule IomdbEx.EquipmentFixtures do
       |> IomdbEx.Equipment.create_monster_strategy()
 
     monster_strategy
-  end
-
-  @doc """
-  Generate a resistance_affect.
-  """
-  def resistance_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    damage_type = GameFixtures.damage_type_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        damage_type_id: damage_type.id
-      })
-
-    {:ok, resistance_affect} =
-      attrs
-      |> Enum.into(%{
-        value: 42
-      })
-      |> IomdbEx.Equipment.create_resistance_affect()
-
-    resistance_affect
-  end
-
-  @doc """
-  Generate a skill_affect.
-  """
-  def skill_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    skill = GuildFixtures.skill_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        skill_id: skill.id
-      })
-
-    {:ok, skill_affect} =
-      attrs
-      |> Enum.into(%{
-        value: 42
-      })
-      |> IomdbEx.Equipment.create_skill_affect()
-
-    skill_affect
-  end
-
-  @doc """
-  Generate a spell_affect.
-  """
-  def spell_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    spell = GuildFixtures.spell_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        spell_id: spell.id
-      })
-
-    {:ok, spell_affect} =
-      attrs
-      |> Enum.into(%{
-        value: 42
-      })
-      |> IomdbEx.Equipment.create_spell_affect()
-
-    spell_affect
-  end
-
-  @doc """
-  Generate a weapon_damage_affect.
-  """
-  def weapon_damage_affect_fixture(attrs \\ %{}) do
-    piece = piece_fixture()
-    weapon_damage_level = weapon_damage_level_fixture()
-    damage_type = GameFixtures.damage_type_fixture()
-
-    attrs =
-      Map.merge(attrs, %{
-        equipment_piece_id: piece.id,
-        weapon_damage_level_id: weapon_damage_level.id,
-        damage_type_id: damage_type.id
-      })
-
-    {:ok, weapon_damage_affect} =
-      attrs
-      |> Enum.into(%{})
-      |> IomdbEx.Equipment.create_weapon_damage_affect()
-
-    weapon_damage_affect
   end
 end

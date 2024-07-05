@@ -1,7 +1,7 @@
 defmodule IomdbExWeb.PieceLive.FormComponent do
   use IomdbExWeb, :live_component
 
-  alias IomdbEx.{Game, Equipment}
+  alias IomdbEx.{Equipment, Game, Guild}
 
   @impl true
   def render(assigns) do
@@ -36,6 +36,7 @@ defmodule IomdbExWeb.PieceLive.FormComponent do
           <IomdbExWeb.Components.Piece.AffectsFormComponent.render
             form={@form}
             relation={:slot_affects}
+            dropdown_id={:slot_id}
             dropdown_title="Slot"
             dropdown_fn={&Game.list_slots/0}
             value={false}
@@ -45,32 +46,47 @@ defmodule IomdbExWeb.PieceLive.FormComponent do
           <IomdbExWeb.Components.Piece.AffectsFormComponent.render
             form={@form}
             relation={:stat_affects}
+            dropdown_id={:stat_id}
             dropdown_title="Stat"
             dropdown_fn={&Game.list_stats/0}
             value={true}
           />
 
-          <%!--
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:skill_affects}
+            dropdown_id={:skill_id}
+            dropdown_title="Skill"
+            dropdown_fn={&Guild.list_skills/0}
+            value={true}
+          />
 
-        <% # Skills %>
-        <.link patch={~p"/skill_affects/new"}>
-          <.button><.icon name="hero-plus" class="h-3 w-3" />Skill</.button>
-        </.link>
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:spell_affects}
+            dropdown_id={:spell_id}
+            dropdown_title="Spell"
+            dropdown_fn={&Guild.list_spells/0}
+            value={true}
+          />
 
-        <% # Spells %>
-        <.link patch={~p"/spell_affects/new"}>
-          <.button><.icon name="hero-plus" class="h-3 w-3" />Spell</.button>
-        </.link>
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:resistance_affects}
+            dropdown_id={:damage_type_id}
+            dropdown_title="Resistance"
+            dropdown_fn={&Game.list_damage_types/0}
+            value={true}
+          />
 
-        <% # Resists %>
-        <.link patch={~p"/resistance_affects/new"}>
-          <.button><.icon name="hero-plus" class="h-3 w-3" />Resist</.button>
-        </.link>
-
-        <% # Weapon damage affects %>
-        <.link patch={~p"/weapon_damage_affects/new"}>
-          <.button><.icon name="hero-plus" class="h-3 w-3" />Dtype</.button>
-        </.link> --%>
+          <IomdbExWeb.Components.Piece.AffectsFormComponent.render
+            form={@form}
+            relation={:weapon_damage_affects}
+            dropdown_id={:damage_type_id}
+            dropdown_title="Damage Type"
+            dropdown_fn={&Game.list_damage_types/0}
+            value={false}
+          />
         <% end %>
 
         <:actions>

@@ -12,23 +12,29 @@ defmodule IomdbEx.Equipment.Piece do
 
     belongs_to :equipment_monster, IomdbEx.Equipment.Monster
 
-    has_many :skill_affects, IomdbEx.Equipment.SkillAffect, foreign_key: :equipment_piece_id
+    has_many :skill_affects, IomdbEx.Equipment.SkillAffect,
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
 
     has_many :slot_affects, IomdbEx.Equipment.SlotAffect,
       foreign_key: :equipment_piece_id,
       on_replace: :delete
 
-    has_many :spell_affects, IomdbEx.Equipment.SpellAffect, foreign_key: :equipment_piece_id
+    has_many :spell_affects, IomdbEx.Equipment.SpellAffect,
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
 
     has_many :stat_affects, IomdbEx.Equipment.StatAffect,
       foreign_key: :equipment_piece_id,
       on_replace: :delete
 
     has_many :resistance_affects, IomdbEx.Equipment.ResistanceAffect,
-      foreign_key: :equipment_piece_id
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
 
     has_many :weapon_damage_affects, IomdbEx.Equipment.WeaponDamageAffect,
-      foreign_key: :equipment_piece_id
+      foreign_key: :equipment_piece_id,
+      on_replace: :delete
 
     timestamps(type: :utc_datetime, inserted_at: :created_at)
   end
@@ -59,17 +65,29 @@ defmodule IomdbEx.Equipment.Piece do
       greater_than_or_equal_to: 0,
       message: "Enter a number zero or greater"
     )
-    |> cast_assoc(:skill_affects)
+    |> cast_assoc(:skill_affects,
+      sort_param: :skill_affects_sort,
+      drop_param: :skill_affects_drop
+    )
     |> cast_assoc(:slot_affects,
       sort_param: :slot_affects_sort,
       drop_param: :slot_affects_drop
     )
-    |> cast_assoc(:spell_affects)
+    |> cast_assoc(:spell_affects,
+      sort_param: :spell_affects_sort,
+      drop_param: :spell_affects_drop
+    )
     |> cast_assoc(:stat_affects,
       sort_param: :stat_affects_sort,
       drop_param: :stat_affects_drop
     )
-    |> cast_assoc(:resistance_affects)
-    |> cast_assoc(:weapon_damage_affects)
+    |> cast_assoc(:resistance_affects,
+      sort_param: :resistance_affects_sort,
+      drop_param: :resistance_affects_drop
+    )
+    |> cast_assoc(:weapon_damage_affects,
+      sort_param: :weapon_damage_affects_sort,
+      drop_param: :weapon_damage_affects_drop
+    )
   end
 end
