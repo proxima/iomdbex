@@ -132,8 +132,16 @@ defmodule IomdbEx.EquipmentList do
 
   """
   def get_list!(id) do
-    Repo.get!(List, id)
-    |> Repo.preload([:admin_user, :equipment_pieces])
+    list =
+      Repo.get!(List, id)
+      |> Repo.preload([:admin_user, :equipment_pieces])
+
+    # TODO: This should be possible in sql.  preload_order isn't acting like my friend
+    #       for 'through' associations.
+
+    sorted_pieces = Enum.sort_by(list.equipment_pieces, &{-&1.tp_value, &1.name})
+
+    %{list | equipment_pieces: sorted_pieces}
   end
 
   @doc """

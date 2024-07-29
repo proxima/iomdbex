@@ -4,7 +4,10 @@ defmodule IomdbEx.Equipment.Monster do
 
   schema "equipment_monsters" do
     field :name, :string
-    has_many :equipment_pieces, IomdbEx.Equipment.Piece, foreign_key: :equipment_monster_id
+
+    has_many :equipment_pieces, IomdbEx.Equipment.Piece,
+      foreign_key: :equipment_monster_id,
+      preload_order: [desc: :tp_value, asc: :name]
 
     timestamps(type: :utc_datetime, inserted_at: :created_at)
   end
